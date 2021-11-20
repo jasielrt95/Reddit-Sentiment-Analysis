@@ -3,6 +3,10 @@
 
 # Import the necessary modules
 import praw
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.sentiment import SentimentIntensityAnalyzer
 
 
@@ -92,3 +96,39 @@ class RedditSentiment:
             print("URL: ", post.url, "\n")
             print("\n")
             print("="*50)
+
+    def word_frequency(self, subreddit="amitheasshole", num_posts=10):
+        """
+        This method will scrape the top posts from a subreddit and check the frequency of each word in the posts.
+
+        ...
+
+        Parameters:
+            subreddit: str, by default "amitheasshole"
+                The subreddit to scrape
+            num_posts: int, by default 10
+                The number of posts to scrape
+        """
+
+        # Get the top posts from the subreddit
+        subreddit = self.reddit.subreddit(subreddit)
+        top_posts = subreddit.hot(limit=num_posts)
+        stop_words = set(stopwords.words('english'))
+        word_freq = {}
+
+        # Remove punctuation and convert to lowercase
+        tokenizer = RegexpTokenizer(r'\w+')
+        for post in top_posts:
+            content = post.title.lower()
+            content = tokenizer.tokenize(content)
+            content = [word for word in content if word not in stop_words]
+            for word in content:
+                if word in word_freq:
+                    word_freq[word] += 1
+                else:
+                    word_freq[word] = 1
+        return word_freq
+
+    def word_cloud_generator(self, word_freq, name):
+        wordcloud = WordCloud(width=800, height=800).generate_from_frequencies(word_freq)
+        wordcloud.to_file(name + ".png")
