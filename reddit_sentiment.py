@@ -3,7 +3,10 @@
 
 # Import the necessary modules
 import praw
+import nltk
+# nltk.download('vader_lexicon')
 from nltk.sentiment import SentimentIntensityAnalyzer
+import matplotlib.pyplot as plt
 
 
 class RedditSentiment:
@@ -75,20 +78,49 @@ class RedditSentiment:
         # Get the top posts from the subreddit
         subreddit = self.reddit.subreddit(subreddit)
         top_posts = subreddit.hot(limit=num_posts)
+    
         # Print the title, content and url of each post if its not stickied
+        tuple = {}
+        
         for post in top_posts:
             print("Tittle: ", post.title, "\n")
-            print("Content: ", post.selftext, "\n")
+            #print("Content: ", post.selftext, "\n")
 
-            if self.sia.polarity_scores(post.selftext)['compound'] > 0:
+            # print(self.sia.polarity_scores(post.title))
+
+            # freq = nltk.FreqDist(post.title)
+            # print(freq.most_common(5))
+
+            if self.sia.polarity_scores(post.title)['compound'] > 0:
                 print("Sentiment: Positive")
+                if "Positive" in tuple:
+                    tuple["Positive"] = tuple["Positive"] + 1
+                else:
+                    tuple["Positive"] = 1
 
-            elif self.sia.polarity_scores(post.selftext)['compound'] < 0:
+            elif self.sia.polarity_scores(post.title)['compound'] < 0:
                 print("Sentiment: Negative")
+                if "Negative" in tuple:
+                    tuple["Negative"] = tuple["Negative"] + 1
+                else:
+                    tuple["Negative"] = 1
 
             else:
                 print("Sentiment: Neutral")
+                if "Neutral" in tuple:
+                    tuple["Neutral"] = tuple["Neutral"] + 1
+                else:
+                    tuple["Neutral"] = 1
 
             print("URL: ", post.url, "\n")
             print("\n")
             print("="*50)
+
+        print(tuple)
+        fig, ax1 = plt.subplots()
+        ax1.bar(tuple.keys(), tuple.values())
+        fig.autofmt_xdate()
+        plt.savefig('graph.png')
+        plt.show()
+
+   
