@@ -119,7 +119,8 @@ class RedditSentiment:
             print("URL: ", post.url, "\n")
             print("\n")
             print("="*50)
-            print(tuple)
+            
+        print(tuple)
         fig, ax1 = plt.subplots()
         ax1.bar(tuple.keys(), tuple.values())
         fig.autofmt_xdate()
