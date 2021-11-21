@@ -11,6 +11,8 @@ import nltk
 # nltk.download('vader_lexicon')
 from nltk.sentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
 
 
 class RedditSentiment:
@@ -82,10 +84,10 @@ class RedditSentiment:
         # Get the top posts from the subreddit
         subreddit = self.reddit.subreddit(subreddit)
         top_posts = subreddit.hot(limit=num_posts)
-    
+
         # Print the title, content and url of each post if its not stickied
         tuple = {}
-        
+
         for post in top_posts:
             print("Tittle: ", post.title, "\n")
             #print("Content: ", post.selftext, "\n")
@@ -119,7 +121,8 @@ class RedditSentiment:
             print("URL: ", post.url, "\n")
             print("\n")
             print("="*50)
-            print(tuple)
+
+        print(tuple)
         fig, ax1 = plt.subplots()
         ax1.bar(tuple.keys(), tuple.values())
         fig.autofmt_xdate()
@@ -159,5 +162,12 @@ class RedditSentiment:
         return word_freq
 
     def word_cloud_generator(self, word_freq, name):
-        wordcloud = WordCloud(width=800, height=800).generate_from_frequencies(word_freq)
+        mask = np.array(Image.open("./world.png"))
+        wordcloud = WordCloud(background_color="white", mask=mask, max_words=100, max_font_size=40, random_state=42, width=mask.shape[1], height=mask.shape[0]).generate_from_frequencies(word_freq)
+        wc = plt.imshow(wordcloud, interpolation='bilinear')
+        # save the image of the word cloud
+        plt.axis("off")
+        plt.savefig(name)
+        plt.show()
+        
         wordcloud.to_file(name + ".png")
