@@ -2,6 +2,7 @@
 # It will also save the title and the url of each post.
 
 # Import the necessary modules
+import operator
 import praw
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
@@ -9,11 +10,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, RegexpTokenizer
 import nltk
 # nltk.download('vader_lexicon')
+# nltk.download('stopwords')
 from nltk.sentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-
+import operator
 
 class RedditSentiment:
     """
@@ -88,35 +90,31 @@ class RedditSentiment:
         # Print the title, content and url of each post if its not stickied
         tuple = {}
 
+        positiveNegativePosts = {}
+        
         for post in top_posts:
-            print("Tittle: ", post.title, "\n")
-            #print("Content: ", post.selftext, "\n")
-
-            # print(self.sia.polarity_scores(post.title))
-
-            # freq = nltk.FreqDist(post.title)
-            # print(freq.most_common(5))
+            # print("Title: ", post.title, "\n")
 
             if self.sia.polarity_scores(post.title)['compound'] > 0:
-                print("Sentiment: Positive")
-                if "Positive" in tuple:
-                    tuple["Positive"] = tuple["Positive"] + 1
+                # print("Sentiment: Positive")
+                if "Positive" in positiveNegativePosts:
+                    positiveNegativePosts["Positive"] = positiveNegativePosts["Positive"] + 1
                 else:
-                    tuple["Positive"] = 1
+                    positiveNegativePosts["Positive"] = 1
 
             elif self.sia.polarity_scores(post.title)['compound'] < 0:
-                print("Sentiment: Negative")
-                if "Negative" in tuple:
-                    tuple["Negative"] = tuple["Negative"] + 1
+                # print("Sentiment: Negative")
+                if "Negative" in positiveNegativePosts:
+                    positiveNegativePosts["Negative"] = positiveNegativePosts["Negative"] + 1
                 else:
-                    tuple["Negative"] = 1
+                    positiveNegativePosts["Negative"] = 1
 
             else:
-                print("Sentiment: Neutral")
-                if "Neutral" in tuple:
-                    tuple["Neutral"] = tuple["Neutral"] + 1
+                # print("Sentiment: Neutral")
+                if "Neutral" in positiveNegativePosts:
+                    positiveNegativePosts["Neutral"] = positiveNegativePosts["Neutral"] + 1
                 else:
-                    tuple["Neutral"] = 1
+                    positiveNegativePosts["Neutral"] = 1
 
             print("URL: ", post.url, "\n")
             print("\n")
@@ -128,6 +126,13 @@ class RedditSentiment:
         fig.autofmt_xdate()
         plt.savefig('graph.png')
         plt.show()
+        
+
+            # print("URL: ", post.url, "\n")
+            # print("\n")
+            # print("="*50)
+            
+        return positiveNegativePosts
 
     def word_frequency(self, subreddit="amitheasshole", num_posts=10):
         """
@@ -159,6 +164,8 @@ class RedditSentiment:
                     word_freq[word] += 1
                 else:
                     word_freq[word] = 1
+        
+      
         return word_freq
 
     def word_cloud_generator(self, word_freq, name):
@@ -171,3 +178,78 @@ class RedditSentiment:
         plt.show()
         
         wordcloud.to_file(name + ".png")
+
+    def positiveWordFreq(self, subreddit="amitheasshole", num_posts=10):
+
+        # Get the top posts from the subreddit
+        subreddit = self.reddit.subreddit(subreddit)
+        top_posts = subreddit.hot(limit=num_posts)
+        stop_words = set(stopwords.words('english'))
+
+        # Remove punctuation and convert to lowercase
+        tokenizer = RegexpTokenizer(r'\w+')
+        # Print the title, content and url of each post if its not stickied
+        positiveWordsFreq = {}
+        
+        for post in top_posts:
+
+            if self.sia.polarity_scores(post.title)['compound'] > 0:
+
+                content = post.title.lower()
+                content = tokenizer.tokenize(content)
+                content = [word for word in content if word not in stop_words]
+                
+                for word in content:
+                        if word in positiveWordsFreq:
+                            positiveWordsFreq[word] += 1
+                        else:
+                            positiveWordsFreq[word] = 1
+
+        
+        sorted_d = dict( sorted(positiveWordsFreq.items(), key=operator.itemgetter(1),reverse=True))
+        
+        return sorted_d
+
+    def negativeWordFreq(self, subreddit="amitheasshole", num_posts=10):
+
+        # Get the top posts from the subreddit
+        subreddit = self.reddit.subreddit(subreddit)
+        top_posts = subreddit.hot(limit=num_posts)
+        stop_words = set(stopwords.words('english'))
+
+        # Remove punctuation and convert to lowercase
+        tokenizer = RegexpTokenizer(r'\w+')
+        # Print the title, content and url of each post if its not stickied
+        negativeWordsFreq = {}
+        
+        for post in top_posts:
+
+            if self.sia.polarity_scores(post.title)['compound'] < 0:
+
+                content = post.title.lower()
+                content = tokenizer.tokenize(content)
+                content = [word for word in content if word not in stop_words]
+                
+                for word in content:
+                        if word in negativeWordsFreq:
+                            negativeWordsFreq[word] += 1
+                        else:
+                            negativeWordsFreq[word] = 1
+
+        
+        sorted_d = dict( sorted(negativeWordsFreq.items(), key=operator.itemgetter(1),reverse=True))
+        
+        return sorted_d
+
+    def graph_Barplot(self, name, listgraph, titleGraph, yAxis="", xAxis=""):
+        
+            plt.title(titleGraph)
+            plt.xlabel(xAxis)
+            plt.ylabel(yAxis)
+          
+            plt.bar(list(listgraph.keys())[:10], list(listgraph.values())[:10])
+           
+            plt.savefig(name + '.png')
+            
+            # plt.show()
+        
