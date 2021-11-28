@@ -1,3 +1,14 @@
+##############################################################################################################
+# This program was devoloped by Jasiel Rivera , Michael Terrafortes and Eliam Ruiz as the final proyect for
+# Data Science class CCOM3031 first semester school year 2021-2022, professor P.Ordoñez UPRRP.
+#
+# Purpose: This program uses data collected through the Reddit API on a given/specified subreddit. Then the 
+# information will be used to determine the given subreddit's sentiment. This is achieved by performing 
+# analysis on its data such as word frequency, top posts, and these words are used to determine is a post is 
+# 'positive, 'negative' or neutral. Then the results will be presented as charts, graphs and even a png 
+# containig the word cloud (most frequent words) of the given subreddit
+############################################################################################################## 
+# imports necesary for the program to work
 from numpy import positive
 import praw
 import matplotlib.pyplot as plt
@@ -6,9 +17,10 @@ from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from wordcloud import WordCloud
 
+# definition of a class that will contain functions/methods that will allow/facilitate teh analisis of the subreddits
 class RedditAnalysis:
     """
-    This class have useful methods for analyzing data about subreddits.
+    This class has useful methods for analyzing data about subreddits.
 
     ...
 
@@ -25,10 +37,44 @@ class RedditAnalysis:
     -------
     reddit_sentiment(subreddit, num_posts=100, title_only=False)
         Returns a list of dictionaries containing the title, text, score, url, and sentiment of the top posts from the given subreddit.
+    subreddit_info(self, subreddit, num_posts=100, title_only=False)
+        Returns a list in which each element is a dictionary that contains the all the information obtained from the respective post and post analisis.
+    subreddit_sentiment(self, post_info)
+        Returns a dictionary that contains the final count of each sentiment present in the post inofrmation 
+    subreddit_word_frequency(self, postinfo)
+        Returns a dictionary that contains what is essentially a map/histogram that contains the amount of times that each word is repeated in the post 
+    top_words_graph(self, word_freq, num_words=10, title="Top Words")
+        Displays a graph that shows the top (most repeated) words in the subreddit
+    get_positive_posts(self, posts)
+        Retuns a list that contains all positive posts in the given/analyzed subreddit (geter function)
+    get_negative_posts(self, posts)
+        Retuns a list that contains all negative posts in the given/analyzed subreddit (geter function)
+    get_neutral_posts(self, posts)
+        Retuns a list that contains all neutral posts in the given/analyzed subreddit (geter function)
+    get_top_posts(self, posts, num_posts)
+        Retuns a list that contains the top posts in the given/analyzed subreddit (geter function)
+    subreddit_wordcloud(self, word_freq)
+        Displays a workcloud using the most frequent words in the given/analyzed subreddit in which the size of every word corresponds to its level of frequency (bigger:mopre frequent, smaller:less frequent)
+    subreddit_sentiment_piechart(self, sentiment_dict, title="Sentiment")
+        Displays a piechart that represents how the subreddit sentiment is shared. Fraction of positiveness, negativeness and neutralness that add up to the whole 
+    
+    
 
     """
 
     def __init__(self, file_name="credentials.txt"):
+        """
+        Constructor funtion for redditanalysis class
+
+        Parameters
+        ----------
+        file_name : string
+            String variable that holds the credentials to the reddit API. Allows the program to retrieve information from reddit
+
+        Returns
+        -------
+            None.
+            """
 
         # Grab the reddit API credentials from the file
         with open(file_name, 'r') as file:
@@ -41,6 +87,23 @@ class RedditAnalysis:
                                   user_agent='reddit_sentiment')
 
     def subreddit_info(self, subreddit, num_posts=100, title_only=False):
+        """
+        Funtion that retrieves and organize all the information to be analyzed fromthe given/analyzed subreddit
+
+        Parameters
+        ----------
+        subreddit : object
+            Access to the subrredit info on Reddit
+        num_posts : integer
+            Variable to set a hard limit/maximum value fo rthe amount of posts to retrieve from the subreddit
+        title_only : bool
+            Bool variable that does ??
+        Returns
+        -------
+        post_info : list
+            A list, organiazed/modularized that contains dictionaries with all the information for every post in the subreddit 
+
+            """
 
         # Create a sia object
         sia = SentimentIntensityAnalyzer()
@@ -111,6 +174,19 @@ class RedditAnalysis:
         return post_info
 
     def subreddit_sentiment(self, post_info):
+        """
+        Funtion that clasifies the sentiment of each post and stores the information in a dictionary
+
+        Parameters
+        ----------
+        post_info : list
+            A list that contains the posts gatherd information from the subreddit
+        Returns
+        -------
+        dictionary : dictionary
+            A dictionary that contains each sentiment and the amount/score earned throughout the post_info
+
+            """
         positives = 0
         negatives = 0
         neutrals = 0
@@ -128,6 +204,19 @@ class RedditAnalysis:
         return dictionary
 
     def subreddit_word_frequency(self, postinfo):
+        """
+        Funtion that counts the amount of times each word is repeated and stores the information in a dictionary
+
+        Parameters
+        ----------
+        postinfo : list
+            A list that contains the posts gatherd information from the subreddit
+        Returns
+        -------
+        word_freq : dictionary
+            A dictionary that contaions all the words mapped to the amount of times each respective word was repeated
+
+            """
         exclude = ["r", "https", "com"]
         text = ""
         word_freq = {}
@@ -145,6 +234,23 @@ class RedditAnalysis:
         return word_freq
 
     def top_words_graph(self, word_freq, num_words=10, title="Top Words"):
+        """
+        Plot a graph of the top words from the given subreddit.
+
+        Parameters
+        ----------
+        word_freq : dictionary
+            A dictionary that contians each word and the amount of times it appears in the subreddit
+        num_words : integer
+            A variable to denote the limit/ maximum amount of words to be used in the graph
+        title : string
+            A string that contains the default graph title 
+
+        Returns
+        -------
+        None.
+
+        """
 
         # order the words by frequency
         if len(word_freq) > 0:
@@ -161,6 +267,20 @@ class RedditAnalysis:
             print("No words to graph")
 
     def get_positive_posts(self, posts):
+        """
+        Geter function that retrieves/determines the positive posts in the subreddit and stores them in a list
+
+        Parameters
+        ----------
+        posts : list
+            A list that contains the posts that where a part of the given/analyzed subreddit
+
+        Returns
+        -------
+        positive_posts : list
+            A list all the posts that where classified as positive posts in the subreddit
+
+            """
         positive_posts = []
         for post in posts:
             if post['sentiment'] == 'positive':
@@ -168,6 +288,20 @@ class RedditAnalysis:
         return positive_posts
 
     def get_negative_posts(self, posts):
+        """
+        Geter function that retrieves/determines the negative posts in the subreddit and stores them in a list
+
+        Parameters
+        ----------
+        posts : list
+            A list that contains the posts that where a part of the given/analyzed subreddit
+
+        Returns
+        -------
+        negative_posts : list
+            A list all the posts that where classified as negative posts in the subreddit
+
+            """
         negative_posts = []
         for post in posts:
             if post['sentiment'] == 'negative':
@@ -175,6 +309,20 @@ class RedditAnalysis:
         return negative_posts
 
     def get_neutral_posts(self, posts):
+        """
+        Geter function that retrieves/determines the neautral posts in the subreddit and stores them in a list
+
+        Parameters
+        ----------
+        posts : list
+            A list that contains the posts that where a part of the given/analyzed subreddit
+
+        Returns
+        -------
+        neutral_posts : list
+            A list all the posts that where classified as neutral posts in the subreddit
+
+            """
         neutral_posts = []
         for post in posts:
             if post['sentiment'] == 'neutral':
@@ -182,6 +330,22 @@ class RedditAnalysis:
         return neutral_posts
 
     def get_top_posts(self, posts, num_posts):
+        """
+        Geter function that retrieves/determines the top posts in the subreddit and stores them in a sorted list
+
+        Parameters
+        ----------
+        posts : list
+            A list that contains the posts that where a part of the given/analyzed subreddit
+        num_posts : integer
+            Variable to store the amount of posts contained in the posts list
+
+        Returns
+        -------
+        top_posts : list
+            A list all the posts that where classified as top posts in the subreddit
+
+            """
         # order posts by score
         if len(posts) < num_posts:
             num_posts = len(posts)
@@ -196,6 +360,19 @@ class RedditAnalysis:
 
 
     def subreddit_wordcloud(self, word_freq):
+            """
+            Create and display a workCloud .png for the user to visualize the word frequency in the subreddit.
+
+            Parameters
+            ----------
+            word_freq : dictionary
+                A dictionary that maps each word analyzed in the subreddit to the amount of times it was posted.
+
+            Returns
+            -------
+            None.
+
+            """
             
             # Create a word cloud object
             wordcloud = WordCloud(

@@ -1,3 +1,13 @@
+##############################################################################################################
+# This program was devoloped by Jasiel Rivera , Michael Terrafortes and Eliam Ruiz as the final proyect for
+# Data Science class CCOM3031 first semester school year 2021-2022, professor P.Ordoñez UPRRP.
+#
+# Purpose: This program uses data collected through the Reddit API on a given/specified subreddit. Then the 
+# information will be used to determine the given subreddit's sentiment. This is achieved by performing 
+# analysis on its data such as word frequency, top posts, and these words are used to determine is a post is 
+# 'positive, 'negative' or neutral. Then the results will be presented as charts, graphs and even a png 
+# containig the word cloud (most frequent words) of the given subreddit
+############################################################################################################## 
 import reddit_analysis as ra
 import uuid
 
