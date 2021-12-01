@@ -15,7 +15,7 @@ def main():
     reddit = ra.RedditAnalysis()
 
     # gather post data
-    posts = reddit.subreddit_info("kpoprants", num_posts=100, title_only=False)
+    posts = reddit.subreddit_info("battlefield2042", num_posts=100, title_only=False)
 
     # get the sentiment of the subreddit
     sentiment = reddit.subreddit_sentiment(posts)
@@ -29,7 +29,7 @@ def main():
     # get neutral posts
     neutral_posts = reddit.get_neutral_posts(posts)
 
-    # get the word frequency of the subreddit
+    # get the word frequency of the subreddit divided by sentiment
     positive_word_freq = reddit.subreddit_word_frequency(positive_posts)
     negative_word_freq = reddit.subreddit_word_frequency(negative_posts)
     neutral_word_freq = reddit.subreddit_word_frequency(neutral_posts)
@@ -43,9 +43,9 @@ def main():
 
     # create word frequency graph
     reddit.top_words_graph(word_freq)
-    reddit.top_words_graph(positive_word_freq, num_words=10, title="Positive Words")
-    reddit.top_words_graph(negative_word_freq, num_words=10, title="Negative Words")
-    reddit.top_words_graph(neutral_word_freq, num_words=10, title="Neutral Words")
+    reddit.top_words_graph(positive_word_freq, num_words=10, title="Common words in positive posts")
+    reddit.top_words_graph(negative_word_freq, num_words=10, title="Common words in negative posts")
+    reddit.top_words_graph(neutral_word_freq, num_words=10, title="Common words in neutral posts")
 
     # create wordcloud png
     reddit.subreddit_wordcloud(word_freq)

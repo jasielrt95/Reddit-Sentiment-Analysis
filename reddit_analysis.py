@@ -12,9 +12,12 @@
 from numpy import positive
 import praw
 import matplotlib.pyplot as plt
+import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
+nltk.download('vader_lexicon')
+nltk.download('stopwords')
 from wordcloud import WordCloud
 
 # definition of a class that will contain functions/methods that will allow/facilitate teh analisis of the subreddits
@@ -122,13 +125,17 @@ class RedditAnalysis:
             # Get the post text
             text = post.selftext
             text = text.lower()
+            # save the tokenized text 
             text = tokenizer.tokenize(text)
+            # remove designated stop words that dont flag semntiment to avoid analizing them (stopwords for english language)
             text = [
                 word for word in text if word not in stopwords.words('english')]
+            # create full string divided by spaces
             text = ' '.join(text)
 
             # Get the post title
             title = post.title
+            # 
             title = title.lower()
             title = tokenizer.tokenize(title)
             title = [
@@ -217,7 +224,7 @@ class RedditAnalysis:
             A dictionary that contaions all the words mapped to the amount of times each respective word was repeated
 
             """
-        exclude = ["r", "https", "com"]
+        exclude = ["r", "https", "com", "www"]
         text = ""
         word_freq = {}
         for post in postinfo:
@@ -226,9 +233,9 @@ class RedditAnalysis:
 
         text = text.split()
         for word in text:
-            if word not in word_freq and word not in exclude:
+            if word not in word_freq and word not in exclude and not word.isdigit():
                 word_freq[word] = 1
-            elif word not in exclude:
+            elif word not in exclude and not word.isdigit():
                 word_freq[word] += 1
         
         return word_freq
