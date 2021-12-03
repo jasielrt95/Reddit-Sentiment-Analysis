@@ -267,7 +267,7 @@ class RedditAnalysis:
             plt.title(title)
             plt.xlabel("Word")
             plt.ylabel("Frequency")
-            plt.bar(range(num_words), [word_freq[i][1] for i in range(num_words)])
+            plt.bar(range(num_words), [word_freq[i][1] for i in range(num_words)], color = ("yellow","cyan","red","black","purple","grey","green","orange","maroon","blue"))
             plt.xticks(range(num_words), [word_freq[i][0] for i in range(num_words)])
             plt.show()
         else:
