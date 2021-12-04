@@ -454,7 +454,7 @@ class RedditAnalysis:
         dictCSV : dictionary
             A list of dictionaries containing the sentimental data from each reddit post: neg, neu, pos, compound.
         name: string
-            A string to name the CSV file with default name as "data".
+            A string to name the CSV file with default name as "data"
 
         Returns
         -------
