@@ -1,5 +1,5 @@
 ##############################################################################################################
-# This program was devoloped by Jasiel Rivera , Michael Terrafortes and Eliam Ruiz as the final proyect for
+# This program was devoloped by Jasiel Rivera , Michael Terrefortes and Eliam Ruiz as the final proyect for
 # Data Science class CCOM3031 first semester school year 2021-2022, professor P.Ordoñez UPRRP.
 #
 # Purpose: This program uses data collected through the Reddit API on a given/specified subreddit. Then the 
@@ -19,6 +19,7 @@ from nltk.tokenize import RegexpTokenizer
 nltk.download('vader_lexicon')
 nltk.download('stopwords')
 from wordcloud import WordCloud
+import csv
 
 # definition of a class that will contain functions/methods that will allow/facilitate teh analisis of the subreddits
 class RedditAnalysis:
@@ -120,6 +121,9 @@ class RedditAnalysis:
         # tokenizer to remove punctuation
         tokenizer = RegexpTokenizer(r'\w+')
 
+        # saving the sentiment data for CSV file creation
+        dictForCSV = []
+
         for post in hot_posts:
 
             # Get the post text
@@ -144,18 +148,22 @@ class RedditAnalysis:
 
             # Get the post score
             score = post.score
-
+            
             # Get the post URL
             url = post.url
 
             # Get the post sentiment
             if title_only:
                 sentiment = sia.polarity_scores(title)
+                # Adds sentiment data
+                dictForCSV.append(sentiment)
 
             else:
                 # Get the post sentiment
                 post = title + " " + text
                 sentiment = sia.polarity_scores(post)
+                # Adds sentiment data
+                dictForCSV.append(sentiment)
 
             if sentiment['compound'] > 0:
                 sentiment = "positive"
@@ -178,7 +186,8 @@ class RedditAnalysis:
             # add the post to the list
             post_info.append(post_dict)
 
-        return post_info
+       
+        return post_info, dictForCSV
 
     def subreddit_sentiment(self, post_info):
         """
@@ -435,6 +444,34 @@ class RedditAnalysis:
             plt.axis('equal')
             plt.show()
 
+    def makeCSVFile(self, dictCSV, name = "data"):
+
+        """
+        Creates a CSV file with the reddit sentiment analysis.
+
+        Parameters
+        ----------
+        dictCSV : dictionary
+            A list of dictionaries containing the sentimental data from each reddit post: neg, neu, pos, compound.
+        name: string
+            A string to name the CSV file with default name as "data".
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # For the title of each column
+        title = ["neg", "neu", "pos", "compound"]
+
+        # Creates CSV file with specific name
+        with open(name + '.csv', 'w') as csvfile:
+            # Writes the header of each column
+            writer = csv.DictWriter(csvfile, fieldnames = title)
+            writer.writeheader()
+            # Writes in each row the sentimental data of post
+            writer.writerows(dictCSV)
 
 
 

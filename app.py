@@ -1,5 +1,5 @@
 ##############################################################################################################
-# This program was devoloped by Jasiel Rivera , Michael Terrafortes and Eliam Ruiz as the final proyect for
+# This program was devoloped by Jasiel Rivera , Michael Terrefortes and Eliam Ruiz as the final proyect for
 # Data Science class CCOM3031 first semester school year 2021-2022, professor P.Ordoñez UPRRP.
 #
 # Purpose: This program uses data collected through the Reddit API on a given/specified subreddit. Then the 
@@ -15,7 +15,10 @@ def main():
     reddit = ra.RedditAnalysis()
 
     # gather post data
-    posts = reddit.subreddit_info("battlefield2042", num_posts=100, title_only=False)
+    posts, dictForCSV = reddit.subreddit_info("politics", num_posts=500, title_only=True)
+
+    # creates a CSV file with data
+    reddit.makeCSVFile(dictForCSV, "politics")
 
     # get the sentiment of the subreddit
     sentiment = reddit.subreddit_sentiment(posts)
