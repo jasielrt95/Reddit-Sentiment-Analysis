@@ -454,7 +454,7 @@ class RedditAnalysis:
         dictCSV : dictionary
             A list of dictionaries containing the sentimental data from each reddit post: neg, neu, pos, compound.
         name: string
-            A string to name the CSV file with default name as "data"
+            A string to name the CSV file with default name as "data".
 
         Returns
         -------
@@ -472,6 +472,90 @@ class RedditAnalysis:
             writer.writeheader()
             # Writes in each row the sentimental data of post
             writer.writerows(dictCSV)
+
+    def makeCSVFileForFreq(self, dictCSV, title):
+        """
+        Creates a CSV file with the frequency of words.
+
+        Parameters
+        ----------
+        dictCSV : dictionary
+            A list of dictionaries containing the frequency of the words.
+        name: string
+            A string to name the CSV file".
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # Create file
+        a_file = open(title + ".csv", "w")
+
+        # Create writer object for CSV file
+        writer = csv.writer(a_file)
+        # Loop through list and write data in row
+        for key, value in dictCSV.items():
+            writer.writerow([key, value])
+
+        # Close created file
+        a_file.close()
+
+    
+    def getWordsRepeatedSubreddits(self, data1, data2):
+        """
+        Gets the same frequent words used positively or negatively in a subreddit.
+
+        Parameters
+        ----------
+        data1 : dictionary
+            A list of dictionaries containing the positive frequent words of the subreddit.
+        data2: dictionary
+            A list of dictionaries containing the negative frequent words of the subreddit.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # List for the positive words
+        n = []
+        # Loop to add words in the array
+        for key in data1.keys():
+            n.append(key)
+
+        # List of the negative words
+        n2 = []
+        # Loop to add words to list
+        for key in data2.keys():
+            n2.append(key)
+
+        # Dictionary of the positive repeated words
+        repetido1 = {}
+
+        # Loop to go through the positive words
+        for key, value in data1.items():
+            # Loop go through negative words
+            for key2, value2 in data2.items():
+                # If the word exists in the two list add word
+                if key == key2:
+                    repetido1[key] = value
+
+        # Dictionary of the negative repeated words
+        repetido2 = {}
+
+        # Loop to go through the negative words
+        for key, value in data2.items():
+            # Loop go through positives words
+            for key2, value2 in data1.items():
+                # If the word exists in the two list add word
+                if key == key2:
+                    repetido2[key] = value
+
+        # Return the dictionary
+        return repetido1, repetido2
 
 
 

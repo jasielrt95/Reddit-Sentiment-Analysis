@@ -15,10 +15,10 @@ def main():
     reddit = ra.RedditAnalysis()
 
     # gather post data
-    posts, dictForCSV = reddit.subreddit_info("politics", num_posts=500, title_only=True)
+    posts, dictForCSV = reddit.subreddit_info("worldnews", num_posts=500, title_only=False)
 
-    # creates a CSV file with data
-    reddit.makeCSVFile(dictForCSV, "politics")
+    # creates a CSV file with sentiment data from subreddit post
+    reddit.makeCSVFile(dictForCSV, "worldnews")
 
     # get the sentiment of the subreddit
     sentiment = reddit.subreddit_sentiment(posts)
@@ -37,6 +37,16 @@ def main():
     negative_word_freq = reddit.subreddit_word_frequency(negative_posts)
     neutral_word_freq = reddit.subreddit_word_frequency(neutral_posts)
 
+    # Creates a CSV file with the frequent positive and negative words
+    reddit.makeCSVFileForFreq(positive_word_freq, "WNFreqPositive")
+    reddit.makeCSVFileForFreq(negative_word_freq, "WNFreqNegative")
+
+    # Gets the repeated words positive and negative in a subreddit
+    repeated1, repeated2 = reddit.getWordsRepeatedSubreddits(positive_word_freq,negative_word_freq)
+
+    # Creates CSV file with the negative and positive repeated words. 
+    reddit.makeCSVFileForFreq(repeated1, "positiveRepeatedWN")
+    reddit.makeCSVFileForFreq(repeated2, "negativeRepeatedWN")
 
     # create sentiment pie chart
     reddit.subreddit_sentiment_piechart(sentiment)
