@@ -12,6 +12,7 @@ En un intento por facilitar el proceso de inteactuar con el codigo para probarlo
 Enlace:
 [Enlace para la solucion web](https://redditanalisys.herokuapp.com/)
 <br>
+Enlace:
 [Github de la pagina web](https://github.com/jasielrt95/Reddit-Flask-Website)
 
 Los componentes implementados son:
