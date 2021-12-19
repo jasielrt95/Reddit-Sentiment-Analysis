@@ -74,7 +74,7 @@ IMPORTANTE. Este archivo contiene todas paquetes que se deben instalar con pip i
 
 Se debera usar:
 
-pip insatll requiremets.txt 
+pip insatll -r requiremets.txt 
 
 
 ### Como correr el programa de manera local 
