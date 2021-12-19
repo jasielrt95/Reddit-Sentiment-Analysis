@@ -81,7 +81,7 @@ pip insatll -r requiremets.txt
 
 Dentro de los archivos del proyecto se encuentra todo lo necesario para correr el programa de manera local en una computadora. Primero se necesitara tener instalada en la maquina una version de Python 3.  Luego se tendra que utilizar
 
-pip install requirements.txt 
+pip install -r requirements.txt 
 
 para instalar todos los paquetes necesarios para que el programa corra. Una vez este proceso se haya completado con exito entonces se visita el archivo app.py. En el mismo en la linea 18 en el primer parametro para la llamada a la funcion subreddit_info utilizando las comillas "" pondra el nombre de la comunidad (subreddit) que desea analizar. Una vez esto sea completado y guardado se debe correr el archivo app.py y le debe salir todas las graficas resultantes de la busqueda y el analisis sobre la comunidad que selecciono.
 
