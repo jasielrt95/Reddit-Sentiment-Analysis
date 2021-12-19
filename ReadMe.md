@@ -11,6 +11,7 @@ En un intento por facilitar el proceso de inteactuar con el codigo para probarlo
 
 Enlace:
 [Enlace para la solucion web](https://redditanalisys.herokuapp.com/)
+[Github de la pagina web](https://github.com/jasielrt95/Reddit-Flask-Website)
 
 Los componentes implementados son:
 - La definicion de la clase RedditAnalysis dentro de reddit_analysis.py
