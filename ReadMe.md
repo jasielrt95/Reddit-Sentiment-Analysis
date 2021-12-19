@@ -78,6 +78,7 @@ pip insatll -r requiremets.txt
 
 
 ### Como correr el programa de manera local 
+(Para poder correr este programa se necesita un archivo de txt con los keys para acceder al API de Reddit)
 
 Dentro de los archivos del proyecto se encuentra todo lo necesario para correr el programa de manera local en una computadora. Primero se necesitara tener instalada en la maquina una version de Python 3.  Luego se tendra que utilizar
 
