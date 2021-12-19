@@ -1,5 +1,5 @@
 ##############################################################################################################
-# This program was devoloped by Jasiel Rivera , Michael Terrafortes and Eliam Ruiz as the final proyect for
+# This program was devoloped by Jasiel Rivera , Michael H. Terrefortes, Jose Portela and Eliam Ruiz as the final proyect for
 # Data Science class CCOM3031 first semester school year 2021-2022, professor P.Ordoñez UPRRP.
 #
 # Purpose: This program uses data collected through the Reddit API on a given/specified subreddit. Then the 
@@ -19,6 +19,7 @@ from nltk.tokenize import RegexpTokenizer
 nltk.download('vader_lexicon')
 nltk.download('stopwords')
 from wordcloud import WordCloud
+import csv
 
 # definition of a class that will contain functions/methods that will allow/facilitate teh analisis of the subreddits
 class RedditAnalysis:
@@ -120,6 +121,9 @@ class RedditAnalysis:
         # tokenizer to remove punctuation
         tokenizer = RegexpTokenizer(r'\w+')
 
+        # saving the sentiment data for CSV file creation
+        dictForCSV = []
+
         for post in hot_posts:
 
             # Get the post text
@@ -144,18 +148,22 @@ class RedditAnalysis:
 
             # Get the post score
             score = post.score
-
+            
             # Get the post URL
             url = post.url
 
             # Get the post sentiment
             if title_only:
                 sentiment = sia.polarity_scores(title)
+                # Adds sentiment data
+                dictForCSV.append(sentiment)
 
             else:
                 # Get the post sentiment
                 post = title + " " + text
                 sentiment = sia.polarity_scores(post)
+                # Adds sentiment data
+                dictForCSV.append(sentiment)
 
             if sentiment['compound'] > 0:
                 sentiment = "positive"
@@ -178,7 +186,8 @@ class RedditAnalysis:
             # add the post to the list
             post_info.append(post_dict)
 
-        return post_info
+       
+        return post_info, dictForCSV
 
     def subreddit_sentiment(self, post_info):
         """
@@ -267,7 +276,7 @@ class RedditAnalysis:
             plt.title(title)
             plt.xlabel("Word")
             plt.ylabel("Frequency")
-            plt.bar(range(num_words), [word_freq[i][1] for i in range(num_words)])
+            plt.bar(range(num_words), [word_freq[i][1] for i in range(num_words)], color = ("yellow","cyan","red","black","purple","grey","green","orange","maroon","blue"))
             plt.xticks(range(num_words), [word_freq[i][0] for i in range(num_words)])
             plt.show()
         else:
@@ -435,6 +444,118 @@ class RedditAnalysis:
             plt.axis('equal')
             plt.show()
 
+    def makeCSVFile(self, dictCSV, name = "data"):
+
+        """
+        Creates a CSV file with the reddit sentiment analysis.
+
+        Parameters
+        ----------
+        dictCSV : dictionary
+            A list of dictionaries containing the sentimental data from each reddit post: neg, neu, pos, compound.
+        name: string
+            A string to name the CSV file with default name as "data".
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # For the title of each column
+        title = ["neg", "neu", "pos", "compound"]
+
+        # Creates CSV file with specific name
+        with open(name + '.csv', 'w') as csvfile:
+            # Writes the header of each column
+            writer = csv.DictWriter(csvfile, fieldnames = title)
+            writer.writeheader()
+            # Writes in each row the sentimental data of post
+            writer.writerows(dictCSV)
+
+    def makeCSVFileForFreq(self, dictCSV, title):
+        """
+        Creates a CSV file with the frequency of words.
+
+        Parameters
+        ----------
+        dictCSV : dictionary
+            A list of dictionaries containing the frequency of the words.
+        name: string
+            A string to name the CSV file".
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # Create file
+        a_file = open(title + ".csv", "w")
+
+        # Create writer object for CSV file
+        writer = csv.writer(a_file)
+        # Loop through list and write data in row
+        for key, value in dictCSV.items():
+            writer.writerow([key, value])
+
+        # Close created file
+        a_file.close()
+
+    
+    def getWordsRepeatedSubreddits(self, data1, data2):
+        """
+        Gets the same frequent words used positively or negatively in a subreddit.
+
+        Parameters
+        ----------
+        data1 : dictionary
+            A list of dictionaries containing the positive frequent words of the subreddit.
+        data2: dictionary
+            A list of dictionaries containing the negative frequent words of the subreddit.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # List for the positive words
+        n = []
+        # Loop to add words in the array
+        for key in data1.keys():
+            n.append(key)
+
+        # List of the negative words
+        n2 = []
+        # Loop to add words to list
+        for key in data2.keys():
+            n2.append(key)
+
+        # Dictionary of the positive repeated words
+        repetido1 = {}
+
+        # Loop to go through the positive words
+        for key, value in data1.items():
+            # Loop go through negative words
+            for key2, value2 in data2.items():
+                # If the word exists in the two list add word
+                if key == key2:
+                    repetido1[key] = value
+
+        # Dictionary of the negative repeated words
+        repetido2 = {}
+
+        # Loop to go through the negative words
+        for key, value in data2.items():
+            # Loop go through positives words
+            for key2, value2 in data1.items():
+                # If the word exists in the two list add word
+                if key == key2:
+                    repetido2[key] = value
+
+        # Return the dictionary
+        return repetido1, repetido2
 
 
 
