@@ -3,6 +3,20 @@ Universidad de Puerto Rico Recinto de Rio Piedras<br>
 Departamento de Ciencias de Computo<br>
 CCOM3031: Introduccion a la Ciencia de Datos<br>
 
+## Enlaces de projecto
+
+Github: https://github.com/jasielrt95/Reddit-Sentiment-Analysis.git <br />
+Youtube video: https://youtu.be/bwvVWq_E5Ic <br />
+Written literature review and results of project: https://docs.google.com/document/d/1pSpkqBOLRK8vUjl8SaaUaVFwF68q_2CPSf38xA-vWXY/edit?usp=sharing <br />
+Meetings paper review: https://docs.google.com/document/d/1Ea2qAN_dDqbxcfV3F1DZRNo-Kyq6YL3i7MOqdg-5TRk/edit?usp=sharing <br />
+Project Website: https://redditanalisys.herokuapp.com/ <br />
+Google Colab: https://colab.research.google.com/drive/1rm-S0Uck5mdAE3gx-0WdR1WpUG_WuuBt?usp=sharing <br />
+
+## Instrucciones de colab
+
+Para ejecutar Google Colab primero, la carpeta de Data debe descargarse del repositorio de Github. Luego cárguelo en el colab y ejecute este código.
+Para ver el sitio web que se implementó con el proyecto, el enlace es este: https://redditanalisys.herokuapp.com/
+
 ## Introduccion
 
 Este proyecto incluye loa implementacion de un programa que utiliza el API de Reddit para recoger informacion de una comunidad dentro de Reddit (estas se llaman subreddits).Con esta informacion y la ayuda del paquete NLTK para python y su modelo entrenado llamado VADER se hace analisis de sentimiento sobre las publicaciones de esta comunidad. Esto permite determinar si una comunidad tiene publicaciones predominantemete positivas, negativas o neutrales. Esto da informacion a los usuarios sobre como es la naturaleza de las publicaciones en una comunidad antes de unirse a ella a traves de graficas e imagenes. En este proyecto tambien se hizo uso de la capacidad del programa para generar archivos .csv sobre los datos que recoge. Se tomaron datos de comunidades politicas y se analizo estos datos para probar la utilidad de este tipo de datos de una manera aplicada a unas comunidades especificas. Este analisis se presentara en google collab a traves de un Jupityer Notebook. 
